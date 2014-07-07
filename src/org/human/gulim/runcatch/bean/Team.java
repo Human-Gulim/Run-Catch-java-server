@@ -86,6 +86,14 @@ public class Team implements Jsonable{
 		return team;
 	}
 
+	/**
+	 * 	  {} <- JSONObject.
+	 * 	  [] <- JSONArray.
+	 * 
+	 * 		{ 	"id_team" : "팀 id",
+	 * 			"members" : [{user bean},{user bean},..] 
+	 * 		}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSONObject() {

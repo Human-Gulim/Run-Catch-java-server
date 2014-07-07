@@ -136,6 +136,20 @@ public class User implements Jsonable{
 	}
 
 
+	/**
+	 * {} <- JSONObject.
+	 * [] <- JSONArray.
+	 * 
+	 * {
+	 * 		"id_room": "룸 아이디",
+	 * 		"nickname": "닉네임",
+	 * 		"phone": "전화번호",
+	 * 		"latitude": "위도",
+	 * 		"longitude": "경도",
+	 * 		"id_team": "팀 아이디",
+	 * 		"future_id_team": "팀 아이디",
+	 * }
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSONObject() {

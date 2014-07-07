@@ -13,7 +13,8 @@ public class RoomInfo implements Jsonable{
 	private long time_left;
 	private Map<Integer, Team>teamMap;
 	private int mode;
-	public static int WAIT_MODE = 0;
+
+	public static int WAIT_MODE = 0;//mode variable.
 	public static int NORMAL_MODE = 1;
 	public static int ESCAPE_MODE = 2;
 
@@ -69,9 +70,26 @@ public class RoomInfo implements Jsonable{
 	
 	
 	/**
-	 * JSONObject�� RoomInfo object�� ��ȯ�Ѵ�.
+	 * JSONObject
 	 * @param obj
 	 * @return The team object into which obj(input) is converted.
+	 * 
+	 * {} <- JSONObject.
+	 * [] <- JSONArray.
+	 * 
+	 * {
+	 * 		"id_room": "룸 id"
+	 * 		"time" : "설정 시간"
+	 * 		"time_left"	: "남은시간"
+	 * 		"mode": "모드 (0,1 or 2 RoomInfo의 static 변수에 설정되어 있음.)" //대기모드인지, 시작되었는지, 탈출모드인지.
+	 * 		"teams":[
+	 * 			
+	 * 			{ 	"id_team" : "팀 id",
+	 * 				"members" : [{user bean},{user bean},..] },
+	 * 			{ 	"id_team" : "팀 id",
+	 * 				"members" : [{user bean},{user bean},..] },
+	 * 		]
+	 * }
 	 */
 	public static RoomInfo getRoomInfoFromJson(JSONObject obj)
 	{
