@@ -159,6 +159,7 @@ public class User implements Jsonable{
 		obj.put("id", id);
 		obj.put("phone", phone);
 		obj.put("latitude", latitude);
+		obj.put("longitude", longitude);
 		obj.put("id_team", id_team);
 		obj.put("future_id_team", future_id_team);
 

@@ -17,7 +17,10 @@ public class Server {
 		serverSocket = new ServerSocket(Constants.SERVER_PORT);
 		while(true)
 		{
+			System.out.println("[listen]: Server is waiting for connection...");
 			socket = serverSocket.accept();
+			System.out.println("[listen]: Connection is accepted.");
+			
 			runnable = new ClientRunnable();
 			runnable.setSocket(socket);
 			new Thread(runnable).start();

@@ -24,6 +24,7 @@ public class ClientRunnable implements Runnable {
 	private Socket socket;
 	private RoomMap roomMap;
 	private ClientMap clientMap;
+	private static String TAG="[Runable]: ";
 
 	public ClientRunnable() {
 
@@ -50,7 +51,8 @@ public class ClientRunnable implements Runnable {
 		try {
 			oIn = new ObjectInputStream(new BufferedInputStream(
 					socket.getInputStream()));
-
+			
+	
 			value = oIn.readObject();
 			
 			try {
@@ -58,16 +60,19 @@ public class ClientRunnable implements Runnable {
 				if(roomInfo!=null)
 				{
 					resultString = roomInfo.toJSONObject().toJSONString();
+					System.out.println(TAG+" normal return: "+resultString);
 				}
 				else
 				{
 					resultString = "";
+					System.out.println(TAG+" error? or isStarted false ");
 				}
 				
 				oOut = new ObjectOutputStream(new BufferedOutputStream(
 						socket.getOutputStream()));
 				oOut.writeObject(resultString);
 				oOut.flush();
+				System.out.println("success");
 
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -128,9 +133,11 @@ public class ClientRunnable implements Runnable {
 		if (event.equals(NetworkMethod.ADD_ALL_MEMBERS))// event ==
 														// NetworkMethod.ADD_ALL_MEMBERS
 		{
+			System.out.println(TAG+"event: "+NetworkMethod.ADD_ALL_MEMBERS+" data: "+data.toJSONString());
+
 			add_all_members(data);
 			id_room = (String) data.get("id_room");
-		}
+					}
 
 		/**
 		 * { "event": "eventName", "data" : { "user": {user bean} } }
@@ -148,6 +155,7 @@ public class ClientRunnable implements Runnable {
 		{
 			createRoom(data);
 			id_room = (String) data.get("id_room");
+			System.out.println(TAG+"event: "+NetworkMethod.CREATE_ROOM+" data: "+data.toJSONString());
 		}
 
 		/**
@@ -164,6 +172,9 @@ public class ClientRunnable implements Runnable {
 		else if (event.equals(NetworkMethod.IS_STARTED))//
 		{
 			id_room = (String) clientMap.get(data.get("id"));
+			System.out.println(TAG+"event: "+NetworkMethod.IS_STARTED+" data: "+data.toJSONString());
+			if(id_room==null)
+				id_room="";
 		}
 
 		/**
@@ -212,18 +223,44 @@ public class ClientRunnable implements Runnable {
 		roomInfo.setMode(RoomInfo.WAIT_MODE);
 		roomInfo.setTime((Long) obj.get("time"));
 		roomInfo.setTime_left((Long) obj.get("time_left"));
+		
 		roomMap.put(roomInfo.getId_room(), roomInfo);
+		System.out.println("create room's mapping is completed");//TODO
 	}
 
 	private void deleteRoom(JSONObject obj) {
-		roomMap.remove(obj.get("id_room"));
+		RoomInfo roomInfo = roomMap.remove(obj.get("id_room"));
+		
+		if(roomInfo!=null)
+		{
+			for(Team team : roomInfo.getTeams().values())
+			{
+				for(User user : team.getMembers())
+				{
+					clientMap.remove(user.getId());
+				}
+			}
+		}
 	}
 
 	private void add_all_members(JSONObject obj) {
 		RoomInfo roomInfo = RoomInfo.getRoomInfoFromJson(obj);
 		RoomInfo currentRoom = roomMap.get(obj.get("id_room"));
+		
+		System.out.println("parsed room info: "+roomInfo.toJSONObject().toJSONString());
 		if (currentRoom != null) {
 			currentRoom.setTeams(roomInfo.getTeams());
+			
+			for(Team team: currentRoom.getTeams().values())
+			{
+				System.out.println("	team id"+team.getId_team());
+				for(User user : team.getMembers())
+				{
+					System.out.println("		user id"+user.getId());
+					user.setId_room(roomInfo.getId_room());
+					clientMap.put(user.getId(), user.getId_room());
+				}
+			}
 			// TODO start. push or another action.
 		}
 
