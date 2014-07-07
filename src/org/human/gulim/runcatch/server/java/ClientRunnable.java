@@ -117,7 +117,7 @@ public class ClientRunnable implements Runnable {
 
 	public RoomInfo getByEvent(String value) throws ParseException {
 		JSONParser parser = new JSONParser();
-		System.out.println(value);
+		//System.out.println(value);
 		JSONObject obj = (JSONObject) parser.parse(value);
 		JSONObject data = (JSONObject) obj.get("data");
 		String event = (String) obj.get("event");
